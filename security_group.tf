@@ -9,7 +9,7 @@ resource "aws_security_group" "ec2" {
 
 resource "aws_security_group_rule" "allow-from-elb" {
   type        = "ingress"
-  description = "ELB to EC2"
+  description = "WEB ALB to EC2"
 
   from_port                = var.web_port
   to_port                  = var.web_port
@@ -21,7 +21,7 @@ resource "aws_security_group_rule" "allow-from-elb" {
 resource "aws_security_group_rule" "allow-943-from-cidr" {
   for_each    = var.admin_allowed_ips
   type        = "ingress"
-  description = "ELB to EC2"
+  description = "Direct to EC2"
 
   from_port         = var.admin_port
   to_port           = var.admin_port
@@ -30,9 +30,9 @@ resource "aws_security_group_rule" "allow-943-from-cidr" {
   security_group_id = aws_security_group.ec2.id
 }
 
-resource "aws_security_group_rule" "allow-1194-from-elb" {
+resource "aws_security_group_rule" "allow-1194-to-ec2" {
   type        = "ingress"
-  description = "ELB to EC2 UDP"
+  description = "All to EC2 UDP"
 
   from_port         = 1194
   to_port           = 1194
@@ -41,9 +41,9 @@ resource "aws_security_group_rule" "allow-1194-from-elb" {
   security_group_id = aws_security_group.ec2.id
 }
 
-resource "aws_security_group_rule" "allow-conn-from-elb" {
+resource "aws_security_group_rule" "allow-conn-to-ec2" {
   type        = "ingress"
-  description = "ELB to EC2 connection port"
+  description = "All to EC2 connection port"
 
   from_port         = var.conn_port
   to_port           = var.conn_port
