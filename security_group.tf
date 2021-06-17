@@ -149,7 +149,7 @@ resource "aws_security_group_rule" "web-ingress-individual-80" {
 
   from_port         = 80
   to_port           = 80
-  protocol          = "HTTP"
+  protocol          = "TCP"
   cidr_blocks       = each.value.ip_addr
   security_group_id = aws_security_group.openvpn-web.id
 }
@@ -162,7 +162,7 @@ resource "aws_security_group_rule" "web-ingress-individual-443" {
 
   from_port         = 443
   to_port           = 443
-  protocol          = "HTTPS"
+  protocol          = "TCP"
   cidr_blocks       = each.value.ip_addr
   security_group_id = aws_security_group.openvpn-web.id
 }
