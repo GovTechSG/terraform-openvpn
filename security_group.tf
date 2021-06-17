@@ -42,6 +42,7 @@ resource "aws_security_group_rule" "allow-1194-to-ec2" {
 }
 
 resource "aws_security_group_rule" "allow-conn-to-ec2" {
+  count       = var.conn_allow_public ? 1 : 0
   type        = "ingress"
   description = "All to EC2 connection port"
 
