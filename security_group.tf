@@ -31,6 +31,7 @@ resource "aws_security_group_rule" "allow-943-from-cidr" {
 }
 
 resource "aws_security_group_rule" "allow-1194-to-ec2" {
+  count       = var.conn_allow_public ? 1 : 0
   type        = "ingress"
   description = "All to EC2 UDP"
 
@@ -38,6 +39,18 @@ resource "aws_security_group_rule" "allow-1194-to-ec2" {
   to_port           = 1194
   protocol          = "UDP"
   cidr_blocks       = ["0.0.0.0/0"]
+  security_group_id = aws_security_group.ec2.id
+}
+
+resource "aws_security_group_rule" "allow-individual-1194-to-ec2" {
+  for_each    = var.conn_allowed_ips
+  type        = "ingress"
+  description = each.value.name
+
+  from_port         = 1194
+  to_port           = 1194
+  protocol          = "UDP"
+  cidr_blocks       = each.value.ip_addr
   security_group_id = aws_security_group.ec2.id
 }
 
