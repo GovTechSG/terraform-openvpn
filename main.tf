@@ -242,6 +242,8 @@ resource "aws_iam_role" "openvpn" {
   path                 = "/"
   permissions_boundary = var.permissions_boundary
 
+  managed_policy_arns  = var.extra_iam_policy_arns
+
   inline_policy {
     name = "my_inline_policy"
 

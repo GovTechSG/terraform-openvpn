@@ -156,6 +156,12 @@ variable "tags" {
   default     = {}
 }
 
+variable "extra_iam_policy_arns" {
+  description = "Extra IAM policies to include (e.g cloudwatch, session manager)"
+  type        = list(string)
+  default     = []
+}
+
 ## NACL
 
 variable "nacl_udp_port_allow_list" {
