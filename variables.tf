@@ -158,6 +158,7 @@ variable "tags" {
 
 variable "extra_iam_policy_arns" {
   description = "Extra IAM policies to include (e.g cloudwatch, session manager)"
+  type        = list(string)
   default     = []
 }
 
