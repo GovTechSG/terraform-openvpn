@@ -276,7 +276,7 @@ resource "aws_iam_role" "openvpn" {
 
 resource "aws_instance" "primary" {
   ami           = var.openvpn_ami_id
-  instance_type = "t3.medium"
+  instance_type = var.instance_type
 
   subnet_id = var.private_subnet_ids[0]
 

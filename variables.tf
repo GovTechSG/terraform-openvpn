@@ -199,3 +199,9 @@ variable "use_rds" {
   type        = bool
   default     = false
 }
+
+variable "instance_type" {
+  description = "instance type of the openvpn server"
+  type        = string
+  default     = "t3a.medium"
+}
