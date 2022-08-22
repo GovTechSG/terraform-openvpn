@@ -205,3 +205,9 @@ variable "instance_type" {
   type        = string
   default     = "t3a.medium"
 }
+
+variable "waf_arn" {
+  description = "if you want to associate the alb to the wafv2"
+  type        = string
+  default     = ""
+}

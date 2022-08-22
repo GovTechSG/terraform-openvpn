@@ -242,7 +242,7 @@ resource "aws_iam_role" "openvpn" {
   path                 = "/"
   permissions_boundary = var.permissions_boundary
 
-  managed_policy_arns  = var.extra_iam_policy_arns
+  managed_policy_arns = var.extra_iam_policy_arns
 
   inline_policy {
     name = "my_inline_policy"
@@ -301,3 +301,8 @@ resource "aws_instance" "primary" {
   }
 }
 
+resource "aws_wafv2_web_acl_association" "waf_association" {
+  count        = var.waf_arn != "" ? 1 : 0
+  resource_arn = aws_lb.web.arn
+  web_acl_arn  = var.waf_arn
+}
