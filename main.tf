@@ -1,6 +1,5 @@
 locals {
-  
-  ovpn_ext_tpl_primary_vars = {
+  ovpn_ext_tpl_primary = templatefile("${path.module}/vm_openvpn.tpl", {
     tf_openvpn_pool_ip        = var.openvpn_pool_ip
     tf_openvpn_hostname       = var.openvpn_hostname
     tf_rds_fqdn               = var.rds_fqdn
@@ -10,10 +9,9 @@ locals {
     tf_private_network_cidrs  = join(", ", var.vpn_private_network_cidrs)
     tf_openvpn_admin_password = var.openvpn_secret_manager_credentials_arn
     tf_aws_region             = var.aws_region
-  }
-  ovpn_ext_tpl_primary = templatefile("${path.module}/vm_openvpn.tpl", ovpn_ext_tpl_primary_vars)
+  })
 
-  ovpn_ext_tpl_secondary_vars = {
+  ovpn_ext_tpl_secondary = templatefile("${path.module}/vm_openvpn.tpl", {
     tf_openvpn_pool_ip        = var.openvpn_pool_ip
     tf_openvpn_hostname       = var.openvpn_hostname
     tf_rds_fqdn               = var.rds_fqdn
@@ -23,9 +21,7 @@ locals {
     tf_private_network_cidrs  = join(", ", var.vpn_private_network_cidrs)
     tf_openvpn_admin_password = var.openvpn_secret_manager_credentials_arn
     tf_aws_region             = var.aws_region
-  }
-
-  ovpn_ext_tpl_secondary = templatefile("${path.module}/vm_openvpn.tpl", ovpn_ext_tpl_secondary_vars)
+  })
 }
 
 resource "aws_lb_target_group_attachment" "primary-web" {
