@@ -1,8 +1,6 @@
-data "template_file" "ovpn_ext_tpl_primary" {
-  count    = var.use_rds ? 1 : 0
-  template = file("${path.module}/vm_openvpn.tpl")
-
-  vars = {
+locals {
+  
+  ovpn_ext_tpl_primary_vars = {
     tf_openvpn_pool_ip        = var.openvpn_pool_ip
     tf_openvpn_hostname       = var.openvpn_hostname
     tf_rds_fqdn               = var.rds_fqdn
@@ -13,13 +11,9 @@ data "template_file" "ovpn_ext_tpl_primary" {
     tf_openvpn_admin_password = var.openvpn_secret_manager_credentials_arn
     tf_aws_region             = var.aws_region
   }
-}
+  ovpn_ext_tpl_primary = templatefile("${path.module}/vm_openvpn.tpl", ovpn_ext_tpl_primary_vars)
 
-data "template_file" "ovpn_ext_tpl_secondary" {
-  count    = var.use_rds ? 1 : 0
-  template = file("${path.module}/vm_openvpn.tpl")
-
-  vars = {
+  ovpn_ext_tpl_secondary_vars = {
     tf_openvpn_pool_ip        = var.openvpn_pool_ip
     tf_openvpn_hostname       = var.openvpn_hostname
     tf_rds_fqdn               = var.rds_fqdn
@@ -30,6 +24,8 @@ data "template_file" "ovpn_ext_tpl_secondary" {
     tf_openvpn_admin_password = var.openvpn_secret_manager_credentials_arn
     tf_aws_region             = var.aws_region
   }
+
+  ovpn_ext_tpl_secondary = templatefile("${path.module}/vm_openvpn.tpl", ovpn_ext_tpl_secondary_vars)
 }
 
 resource "aws_lb_target_group_attachment" "primary-web" {
@@ -69,7 +65,7 @@ resource "aws_launch_configuration" "ovpn-launch" {
     encrypted   = true
   }
 
-  user_data_base64 = var.use_rds ? base64encode(data.template_file.ovpn_ext_tpl_secondary[0].rendered) : ""
+  user_data_base64       = var.use_rds ? base64encode(local.ovpn_ext_tpl_secondary) : ""
 
   lifecycle {
     create_before_destroy = true
@@ -294,7 +290,7 @@ resource "aws_instance" "primary" {
 
   vpc_security_group_ids = [aws_security_group.ec2.id]
   key_name               = var.key_name
-  user_data_base64       = var.use_rds ? base64encode(data.template_file.ovpn_ext_tpl_primary[0].rendered) : ""
+  user_data_base64       = var.use_rds ? base64encode(local.ovpn_ext_tpl_primary) : ""
 
   tags = {
     Name = "${var.name}-primary"
