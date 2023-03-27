@@ -21,7 +21,7 @@ resource "aws_security_group_rule" "allow-from-elb" {
 resource "aws_security_group_rule" "allow-943-from-cidr" {
   for_each    = var.admin_allowed_ips
   type        = "ingress"
-  description = "Direct to EC2"
+  description = "${each.value.name}-ec2-admin-direct"
 
   from_port         = var.admin_port
   to_port           = var.admin_port
