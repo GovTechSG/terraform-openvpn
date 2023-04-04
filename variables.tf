@@ -94,6 +94,15 @@ variable "web_allowed_ips" {
   default     = {}
 }
 
+variable "web_allowed_ipv6s" {
+  type = map(object({
+    name    = string,
+    ip_addr = set(string)
+  }))
+  description = "Map of User and IPv6 for tcp 443 web"
+  default     = {}
+}
+
 variable "conn_allow_public" {
   description = "Allow public vpn clients to connect to the vpn server?"
   type        = bool
@@ -112,6 +121,15 @@ variable "conn_allowed_ips" {
     ip_addr = set(string)
   }))
   description = "Map of User and IP for openvpn connection"
+  default     = {}
+}
+
+variable "conn_allowed_ipv6s" {
+  type = map(object({
+    name    = string,
+    ip_addr = set(string)
+  }))
+  description = "Map of User and IPv6 for openvpn connection"
   default     = {}
 }
 

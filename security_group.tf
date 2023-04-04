@@ -54,6 +54,18 @@ resource "aws_security_group_rule" "allow-individual-1194-to-ec2" {
   security_group_id = aws_security_group.ec2.id
 }
 
+resource "aws_security_group_rule" "allow-individual-1194-to-ec2-ipv6" {
+  for_each    = var.conn_allowed_ipv6s
+  type        = "ingress"
+  description = each.value.name
+
+  from_port         = 1194
+  to_port           = 1194
+  protocol          = "UDP"
+  ipv6_cidr_blocks       = each.value.ip_addr
+  security_group_id = aws_security_group.ec2.id
+}
+
 resource "aws_security_group_rule" "allow-conn-to-ec2" {
   count       = var.conn_allow_public ? 1 : 0
   type        = "ingress"
@@ -75,6 +87,18 @@ resource "aws_security_group_rule" "allow-web-internal" {
   to_port           = var.web_port
   protocol          = "TCP"
   cidr_blocks       = each.value.ip_addr
+  security_group_id = aws_security_group.ec2.id
+}
+
+resource "aws_security_group_rule" "allow-web-internal-ipv6" {
+  for_each    = var.web_allowed_ipv6s
+  type        = "ingress"
+  description = each.value.name
+
+  from_port         = var.web_port
+  to_port           = var.web_port
+  protocol          = "TCP"
+  ipv6_cidr_blocks       = each.value.ip_addr
   security_group_id = aws_security_group.ec2.id
 }
 
@@ -123,6 +147,19 @@ resource "aws_security_group_rule" "conn-ingress-individual" {
   security_group_id = aws_security_group.openvpn-conn.id
 }
 
+resource "aws_security_group_rule" "conn-ingress-individual-ipv6" {
+  for_each = var.conn_allowed_ipv6s
+
+  type        = "ingress"
+  description = each.value.name
+
+  from_port         = var.conn_port
+  to_port           = var.conn_port
+  protocol          = "tcp"
+  ipv6_cidr_blocks  = each.value.ip_addr
+  security_group_id = aws_security_group.openvpn-conn.id
+}
+
 resource "aws_security_group_rule" "conn-ingress-public" {
   count = var.web_allow_public ? 1 : 0
 
@@ -168,6 +205,19 @@ resource "aws_security_group_rule" "web-ingress-individual-80" {
   security_group_id = aws_security_group.openvpn-web.id
 }
 
+resource "aws_security_group_rule" "web-ingress-individual-80-ipv6" {
+  for_each = var.web_allowed_ipv6s
+
+  type        = "ingress"
+  description = each.value.name
+
+  from_port         = 80
+  to_port           = 80
+  protocol          = "TCP"
+  ipv6_cidr_blocks  = each.value.ip_addr
+  security_group_id = aws_security_group.openvpn-web.id
+}
+
 resource "aws_security_group_rule" "web-ingress-individual-443" {
   for_each = var.web_allowed_ips
 
@@ -178,6 +228,19 @@ resource "aws_security_group_rule" "web-ingress-individual-443" {
   to_port           = 443
   protocol          = "TCP"
   cidr_blocks       = each.value.ip_addr
+  security_group_id = aws_security_group.openvpn-web.id
+}
+
+resource "aws_security_group_rule" "web-ingress-individual-443-ipv6" {
+  for_each = var.web_allowed_ipv6s
+
+  type        = "ingress"
+  description = each.value.name
+
+  from_port         = 443
+  to_port           = 443
+  protocol          = "TCP"
+  ipv6_cidr_blocks  = each.value.ip_addr
   security_group_id = aws_security_group.openvpn-web.id
 }
 
